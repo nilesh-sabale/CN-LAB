@@ -1,76 +1,78 @@
-import java.util.Scanner;
+import java.util.*;
 
-public class CRC {
-
-    // Function to perform XOR division
-    public static String xorDivision(String dividend, String divisor) {
-        int pick = divisor.length();
-        String temp = dividend.substring(0, pick);
-
-        while (pick < dividend.length()) {
-            if (temp.charAt(0) == '1') {
-                // Perform XOR and bring down the next bit
-                temp = xor(divisor, temp) + dividend.charAt(pick);
-            } else {
-                // If leftmost bit is 0, replace with zeros
-                temp = xor("0".repeat(pick), temp) + dividend.charAt(pick);
-            }
-            pick++;
-        }
-
-        // Last XOR step
-        if (temp.charAt(0) == '1') {
-            temp = xor(divisor, temp);
-        } else {
-            temp = xor("0".repeat(pick), temp);
-        }
-
-        return temp.substring(1); // remainder
-    }
-
-    // XOR operation between two binary strings
-    public static String xor(String a, String b) {
+class CRC {    
+    // Returns XOR of 'a' and 'b' (bitwise comparison)
+    static String findXor(String a, String b) {
+        int n = b.length();
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < b.length(); i++) {
-            result.append(a.charAt(i) == b.charAt(i) ? '0' : '1');
+        
+        // Compare each bit (skip first bit as per original logic)
+        for (int i = 1; i < n; i++) {
+            if (a.charAt(i) == b.charAt(i)) {
+                result.append('0');
+            } else {
+                result.append('1');
+            }
         }
         return result.toString();
     }
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    // Performs Modulo-2 division (CRC division)
+    static String mod2div(String dividend, String divisor) {
+        int n = dividend.length();
+        int pick = divisor.length();
+        String tmp = dividend.substring(0, pick);
 
-        // Input ASCII message (7 or 8 bits)
-        System.out.print("Enter binary message (7/8 bits): ");
-        String message = sc.next();
-
-        System.out.print("Enter generator polynomial (binary): ");
-        String generator = sc.next();
-
-        // Append zeros (degree of generator - 1)
-        String appendedData = message + "0".repeat(generator.length() - 1);
-
-        // Get remainder
-        String remainder = xorDivision(appendedData, generator);
-
-        // Codeword = original message + remainder
-        String codeword = message + remainder;
-
-        System.out.println("Remainder (CRC bits): " + remainder);
-        System.out.println("Transmitted codeword: " + codeword);
-
-        // Receiver side
-        System.out.print("Enter received codeword: ");
-        String received = sc.next();
-
-        String checkRemainder = xorDivision(received, generator);
-
-        if (checkRemainder.contains("1")) {
-            System.out.println("Error detected in received message!");
-        } else {
-            System.out.println("No error detected.");
+        while (pick < n) {
+            if (tmp.charAt(0) == '1') {
+                // XOR with divisor and bring down next bit
+                tmp = findXor(divisor, tmp) + dividend.charAt(pick);
+            } else {
+                // XOR with zeros and bring down next bit
+                tmp = findXor(String.format("%0" + pick + "d", 0), tmp) 
+                      + dividend.charAt(pick);
+            }
+            pick += 1;
         }
 
-        sc.close();
+        // Final XOR step
+        if (tmp.charAt(0) == '1') {
+            tmp = findXor(divisor, tmp);
+        } else {
+            tmp = findXor(String.format("%0" + pick + "d", 0), tmp);
+        }
+
+        return tmp;
+    }
+
+    // Appends CRC remainder to original data
+    public static String encodeData(String data, String key) {
+        int n = key.length();
+        String str = data + String.join("", Collections.nCopies(n - 1, "0"));
+        String remainder = mod2div(str, key);
+        return data + remainder;
+    }
+
+    // Checks if received data has errors
+    public static int receiver(String code, String key) {
+        String remainder = mod2div(code, key);
+        return remainder.contains("1") ? 0 : 1;
+    }
+
+    public static void main(String[] args) {
+        String data = "100100";
+        String key = "1101";
+        
+        System.out.println("Data: " + data);
+        System.out.println("Key: " + key);
+        String code = encodeData(data, key);
+        System.out.println("Encoded Data: " + code + "\n");
+
+        System.out.println("Receiver Side");
+        if (receiver(code, key) == 1) {
+            System.out.println("Data is correct (No errors detected)");
+        } else {
+            System.out.println("Data is incorrect (Error detected)");
+        }
     }
 }
