@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RaaS — Educational Simulator (Sandboxed)</title>
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#0f1724;color:#e6eef8}
+    header{background:linear-gradient(90deg,#0ea5a4,#7c3aed);padding:16px 24px}
+    .container{padding:20px;max-width:1100px;margin:0 auto}
+    .grid{display:grid;grid-template-columns:360px 1fr;gap:18px}
+    .card{background:#051026;border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(2,6,23,.6)}
+    h1{margin:0;color:white;font-size:20px}
+    label{display:block;margin-top:8px;color:#9fb0c8;font-size:13px}
+    input,textarea,select,button{width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #122033;background:#071024;color:#cfe7ff}
+    button{cursor:pointer}
+    .small{font-size:12px;color:#9fb0c8}
+    .fake-file{display:flex;justify-content:space-between;padding:8px;border-radius:8px;margin-top:8px;background:#02111b}
+    .analytics{display:flex;gap:12px;flex-wrap:wrap}
+    .pill{background:#072030;padding:8px;border-radius:8px}
+    footer{padding:12px;text-align:center;color:#9fb0c8}
+    .danger{color:#ffb4b4}
+    .ok{color:#b7f5c4}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container"><h1>RaaS — Educational Simulator (Sandboxed)</h1></div>
+  </header>
+  <main class="container">
+    <p class="small">Safe, offline demo: this simulator <strong>does not</strong> create or run malware. It only demonstrates UI/workflow and simulates effects inside the browser using sample files you add below.</p>
+    <div class="grid">
+      <section class="card">
+        <h2 style="color:#cfe7ff">Affiliate Dashboard (Simulator)</h2>
+        <label>Campaign name</label>
+        <input id="campaignName" placeholder="e.g. Finance-Phish-001"/>
+
+        <label>Payload builder (safe - generates a downloadable .txt placeholder)</label>
+        <input id="payloadName" placeholder="payload-name"/>
+        <label>Ransom note text</label>
+        <textarea id="ransomNote" rows="3">Your files are encrypted. Contact attacker@example[.]onion</textarea>
+        <label>Revenue share (%)</label>
+        <select id="revShare"><option>70</option><option>80</option><option>90</option></select>
+        <button id="buildBtn">Build (create sandbox payload)</button>
+        <div id="builderResult" class="small"></div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid #102033"/>
+        <h3 style="color:#cfe7ff">Sample victim machine (sandboxed)</h3>
+        <p class="small">Add sample files here — simulator will only transform these demo files inside your browser's memory.</p>
+        <label>Add a sample file name</label>
+        <input id="sampleName" placeholder="report.docx"/>
+        <label>Sample file content (plain text)</label>
+        <textarea id="sampleContent" rows="3">This is a sample file used for classroom demo.</textarea>
+        <button id="addFile">Add Sample File</button>
+        <div id="fileList"></div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid #102033"/>
+        <button id="simulateInfect">Simulate "Deploy Payload" (sandbox)</button>
+        <div id="infectResult" class="small"></div>
+      </section>
+
+      <section class="card">
+        <h2 style="color:#cfe7ff">Campaign View & Analytics (Simulated)</h2>
+        <div class="analytics">
+          <div class="pill">Campaigns: <strong id="campaignCount">0</strong></div>
+          <div class="pill">Simulated infections: <strong id="infCount">0</strong></div>
+          <div class="pill">Fake revenue: <strong id="revenue">$0</strong></div>
+        </div>
+
+        <h3 style="margin-top:12px;color:#cfe7ff">Campaigns</h3>
+        <div id="campaigns"></div>
+
+        <h3 style="margin-top:12px;color:#cfe7ff">Live Console (simulated events)</h3>
+        <pre id="console" style="height:260px;overflow:auto;background:#021122;border-radius:8px;padding:8px;color:#b7e0ff;font-size:13px"></pre>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid #102033"/>
+        <h3 style="color:#cfe7ff">Presentation notes & workflow</h3>
+        <ol class="small">
+          <li>Show dashboard + builder UI to explain operator/affiliate separation.</li>
+          <li>Build fake payload — downloadable .txt demonstrates "builder" output.</li>
+          <li>Add sample files and run "Simulate Deploy" to show how a RaaS operator tracks infections (simulation only).</li>
+          <li>Explain detection & defenses: backups, MFA, patching, EDR.</li>
+        </ol>
+
+        <h4 style="margin-top:12px;color:#cfe7ff">Safety note</h4>
+        <p class="small danger">This demo is intentionally non-malicious and sandboxed. Never attempt to create or deploy real ransomware. Use only for presentations and learning.</p>
+      </section>
+    </div>
+
+    <section style="margin-top:18px" class="card">
+      <h2 style="color:#cfe7ff">Suggested PPT additions (copy-paste into slides)</h2>
+      <ul class="small">
+        <li><strong>Slide:</strong> Title + safety disclaimer. <em>Speaker note:</em> emphasise demo is sandboxed.</li>
+        <li><strong>Slide:</strong> RaaS ecosystem — roles (Operator, Affiliate, Negotiator).</li>
+        <li><strong>Slide:</strong> Simulated demo screenshots + short video clip walkthrough.</li>
+        <li><strong>Slide:</strong> Workflow visual (Initial access → Lateral move → Encryption → Extortion).</li>
+        <li><strong>Slide:</strong> Defenses & IR checklist (Backups, MFA, EDR, Patching, Segmentation).</li>
+      </ul>
+      <p class="small">Below this demo file is a downloadable code snippet for inserting into your slides or a local web server for in-class demo.</p>
+    </section>
+
+  </main>
+  <footer>
+    Built for education — safe, local-only demo. Do not upload real files. <span class="ok">✅</span>
+  </footer>
+
+  <script>
+    // Simple in-memory structures
+    const campaigns = [];
+    const sampleFiles = []; // {id,name,content,encrypted:false}
+    const consoleEl = document.getElementById('console');
+
+    function log(s){
+      const t = new Date().toLocaleTimeString();
+      consoleEl.textContent = `[${t}] ${s}\n` + consoleEl.textContent;
+    }
+
+    // Build payload (safe placeholder) - creates a downloadable txt file (no executable)
+    document.getElementById('buildBtn').addEventListener('click', ()=>{
+      const name = document.getElementById('payloadName').value.trim() || 'payload-placeholder';
+      const note = document.getElementById('ransomNote').value;
+      const rev = document.getElementById('revShare').value;
+      const payloadContents = `--- RaaS Simulator Payload (SAFE) ---\nName: ${name}\nRevenueShare: ${rev}%\nRansomNote:\n${note}\n\n(This is a harmless text file for classroom demos only.)`;
+      const blob = new Blob([payloadContents],{type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = name + '.txt';
+      a.textContent = 'Download payload (safe .txt)';
+      document.getElementById('builderResult').innerHTML = '';
+      document.getElementById('builderResult').appendChild(a);
+      log('Built safe payload: ' + name);
+    });
+
+    // Add sample file
+    document.getElementById('addFile').addEventListener('click', ()=>{
+      const nm = document.getElementById('sampleName').value.trim() || 'sample.txt';
+      const ct = document.getElementById('sampleContent').value;
+      const id = Math.random().toString(36).slice(2,9);
+      sampleFiles.push({id,name:nm,content:ct,encrypted:false});
+      renderFiles();
+      log('Added sample file: ' + nm);
+    });
+
+    function renderFiles(){
+      const el = document.getElementById('fileList'); el.innerHTML='';
+      sampleFiles.forEach(f=>{
+        const d = document.createElement('div'); d.className='fake-file';
+        const left = document.createElement('div');
+        left.innerHTML = `<strong>${f.name}</strong><div class="small">${f.encrypted?'<span class=\'danger\'>Encrypted (simulated)</span>':'Plaintext (simulated)'}</div>`;
+        const right = document.createElement('div');
+        const btn = document.createElement('button'); btn.textContent = 'View'; btn.onclick = ()=>{
+          alert('File: ' + f.name + '\n\n' + (f.encrypted?atob(f.content):f.content));
+        };
+        right.appendChild(btn);
+        d.appendChild(left); d.appendChild(right);
+        el.appendChild(d);
+      });
+    }
+
+    // Simulate deploy: 'encrypt' sample files by base64 encoding their content and mark encrypted=true
+    document.getElementById('simulateInfect').addEventListener('click', ()=>{
+      if(sampleFiles.length===0){ alert('Add at least one sample file first (this demo is sandboxed).'); return; }
+      // create a new campaign entry
+      const campName = document.getElementById('campaignName').value.trim() || ('camp-' + Math.floor(Math.random()*1000));
+      const camp = {id:Math.random().toString(36).slice(2,9), name:campName, infections:0, revenue:0};
+      campaigns.push(camp);
+      document.getElementById('campaignCount').textContent = campaigns.length;
+      document.getElementById('campaigns').innerHTML = campaigns.map(c=>`<div class=\"pill\">${c.name} — infections: ${c.infections}</div>`).join(' ');
+
+      // Simulate infection of each sample file
+      let infected = 0;
+      sampleFiles.forEach(f=>{
+        if(!f.encrypted){
+          // simulate encryption: base64 encode content and store in content field; mark encrypted true
+          const b64 = btoa(f.content);
+          f.content = b64; f.encrypted = true; infected++;
+          log(`Simulated encrypt: ${f.name} (campaign ${camp.name})`);
+        } else {
+          log(`Already simulated encrypted: ${f.name}`);
+        }
+      });
+      camp.infections += infected; camp.revenue += infected * 500; // simulated money
+
+      document.getElementById('infCount').textContent = parseInt(document.getElementById('infCount').textContent) + infected;
+      document.getElementById('revenue').textContent = '$' + campaigns.reduce((s,c)=>s+c.revenue,0);
+      document.getElementById('campaigns').innerHTML = campaigns.map(c=>`<div class=\"pill\">${c.name} — infections: ${c.infections} — revenue: $${c.revenue}</div>`).join(' ');
+      renderFiles();
+      document.getElementById('infectResult').textContent = infected + ' sample files simulated as encrypted (sandbox)';
+      log(`Simulated deploy complete: ${infected} files affected.`);
+    });
+
+    // Initial sample for convenience
+    sampleFiles.push({id:'s1',name:'financials.txt',content:'Quarterly profits: 1,234,567',encrypted:false});
+    sampleFiles.push({id:'s2',name:'notes.txt',content:'Project notes and credentials (mock)',encrypted:false});
+    renderFiles();
+  </script>
+</body>
+</html>

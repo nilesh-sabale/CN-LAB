@@ -7,7 +7,6 @@ public class HammingCRC {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        // Input string
         System.out.println("Enter ASCII string (7/8 bit per char): ");
         String input = sc.nextLine();
 
