@@ -1,0 +1,2 @@
+This is send.txt created at client side.
+This will be send to Server by Client.
